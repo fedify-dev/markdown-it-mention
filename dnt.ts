@@ -38,14 +38,17 @@ await build({
       email: "hong@minhee.org",
       url: "https://hongminhee.org/",
     },
-    homepage: "https://github.com/dahlia/markdown-it-mention",
+    homepage: "https://github.com/fedify-dev/markdown-it-mention",
     repository: {
       type: "git",
-      url: "git+https://github.com/dahlia/markdown-it-mention.git",
+      url: "git+https://github.com/fedify-dev/markdown-it-mention.git",
     },
     bugs: {
-      url: "https://github.com/dahlia/markdown-it-mention/issues",
+      url: "https://github.com/fedify-dev/markdown-it-mention/issues",
     },
+    funding: [
+      "https://github.com/sponsors/dahlia"
+    ],
     devDependencies: {
       "@types/markdown-it": "^14.1.1",
     },

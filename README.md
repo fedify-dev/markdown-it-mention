@@ -49,8 +49,8 @@ console.log(env.mentions);  // ["@foo@bar.com", "@baz@qux.com"]
 [JSR badge]: https://jsr.io/badges/@fedify/markdown-it-mention
 [npm]: https://www.npmjs.com/package/@fedify/markdown-it-mention
 [npm badge]: https://img.shields.io/npm/v/%40fedify%2Fmarkdown-it-mention?logo=npm
-[GitHub Actions]: https://github.com/dahlia/markdown-it-mention/actions/workflows/main.yaml
-[GitHub Actions badge]: https://github.com/dahlia/markdown-it-mention/actions/workflows/main.yaml/badge.svg
+[GitHub Actions]: https://github.com/fedify-dev/markdown-it-mention/actions/workflows/main.yaml
+[GitHub Actions badge]: https://github.com/fedify-dev/markdown-it-mention/actions/workflows/main.yaml/badge.svg
 [markdown-it]: https://github.com/markdown-it/markdown-it
 [options]: https://jsr.io/@fedify/markdown-it-mention/doc/~/PluginOptions
 
