@@ -61,7 +61,7 @@ Installation
 ### Deno
 
 ~~~~ sh
-deno add @fedify/markdown-it-mention
+deno add jsr:@fedify/markdown-it-mention
 ~~~~
 
 ### Node.js

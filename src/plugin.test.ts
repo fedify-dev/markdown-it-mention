@@ -4,9 +4,7 @@ import { toFullHandle } from "./label.ts";
 import { mention } from "./plugin.ts";
 
 Deno.test("mention()", () => {
-  const md = new MarkdownIt({
-    html: true,
-  });
+  const md = new MarkdownIt({ html: true });
   md.use(mention);
   // deno-lint-ignore no-explicit-any
   const env: any = {};
@@ -19,6 +17,8 @@ Deno.test("mention()", () => {
 [This should be ignored: @hongminhee@wizard.casa](https://example.com/)
 
 <a href="">This also should be ignored: @foo@bar.com</a>
+
+This also should be ignored: @foo.
 `,
     env,
   );
@@ -35,12 +35,11 @@ Deno.test("mention()", () => {
 </blockquote>
 <p><a href="https://example.com/">This should be ignored: @hongminhee@wizard.casa</a></p>
 <p><a href="">This also should be ignored: @foo@bar.com</a></p>
+<p>This also should be ignored: @foo.</p>
 `,
   );
 
-  const md2 = new MarkdownIt({
-    html: true,
-  });
+  const md2 = new MarkdownIt();
   md2.use(mention, {
     // deno-lint-ignore no-explicit-any
     link: (handle: string, env: any) =>
@@ -67,4 +66,26 @@ Deno.test("mention()", () => {
       "<p>@baz@qux.com</p>\n" +
       "</blockquote>\n",
   );
+
+  const md3 = new MarkdownIt();
+  md3.use(mention, {
+    localDomain(bareHandle, env) {
+      return env.domains[bareHandle];
+    },
+  });
+  const env3 = {
+    domains: { "@foo": "a.com", "@bar": "b.com" },
+    mentions: [],
+  };
+  const html3 = md3.render("@foo\n\n@bar\n\n@baz\n\n@qux@d.com", env3);
+  assertEquals(
+    html3,
+    `\
+<p><a  href="acct:@foo@a.com"><span class="at">@</span><span class="user">foo</span></a></p>
+<p><a  href="acct:@bar@b.com"><span class="at">@</span><span class="user">bar</span></a></p>
+<p>@baz</p>
+<p><a  href="acct:@qux@d.com"><span class="at">@</span><span class="user">qux</span></a></p>
+`,
+  );
+  assertEquals(env3.mentions, ["@foo@a.com", "@bar@b.com", "@qux@d.com"]);
 });

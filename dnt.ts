@@ -47,7 +47,7 @@ await build({
       url: "https://github.com/fedify-dev/markdown-it-mention/issues",
     },
     funding: [
-      "https://github.com/sponsors/dahlia"
+      "https://github.com/sponsors/dahlia",
     ],
     devDependencies: {
       "@types/markdown-it": "^14.1.1",

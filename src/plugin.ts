@@ -12,6 +12,18 @@ type StateCore = Parameters<MarkdownIt["core"]["process"]>[0];
  */
 export interface PluginOptions {
   /**
+   * A function to determine the domain of a bare handle.  If it returns `null`,
+   * the bare handle will be rendered as plain text.  `null` by default.
+   * @param bareHandle The bare handle, e.g., `"@john"`.
+   * @param env The environment.
+   * @returns The local domain of the handle or `null` if the handle should be
+   *          plain text.
+   * @since 0.3.0
+   */
+  // deno-lint-ignore no-explicit-any
+  localDomain?: (bareHandle: string, env: any) => string | null;
+
+  /**
    * A function to render a link href for a mention.  If it returns `null`,
    * the mention will be rendered as plain text.  `acct:${handle}` by default.
    * @param handle The handle, e.g., `"@john@example.com"`.
@@ -85,7 +97,7 @@ function parseMention(state: StateCore, options?: PluginOptions) {
 }
 
 const MENTION_PATTERN =
-  /@[\p{L}\p{N}._-]+@(?:[\p{L}\p{N}][\p{L}\p{N}_-]*\.)+[\p{L}\p{N}]{2,}/giu;
+  /@[\p{L}\p{N}._-]+(@(?:[\p{L}\p{N}][\p{L}\p{N}_-]*\.)+[\p{L}\p{N}]{2,})?/giu;
 
 function splitTokens(
   token: Token,
@@ -98,6 +110,15 @@ function splitTokens(
   for (const match of content.matchAll(MENTION_PATTERN)) {
     if (match.index == null) continue;
 
+    let handle = match[0];
+    if (match[1] == null) {
+      const localDomain = options?.localDomain == null
+        ? null
+        : options.localDomain(handle, state.env);
+      if (localDomain == null) continue;
+      handle += `@${localDomain}`;
+    }
+
     if (match.index > pos) {
       const token = new state.Token("text", "", 0);
       token.content = content.substring(pos, match.index);
@@ -105,7 +126,7 @@ function splitTokens(
       tokens.push(token);
     }
 
-    const href = options?.link?.(match[0], state.env);
+    const href = options?.link?.(handle, state.env);
     if (href == null && options?.link != null) {
       const token = new state.Token("text", "", 0);
       token.content = match[0];
@@ -116,13 +137,13 @@ function splitTokens(
     }
 
     const token = new state.Token("mention", "", 0);
-    token.content = options?.label?.(match[0], state.env) ??
-      toBareHandle(match[0], state.env);
+    token.content = options?.label?.(handle, state.env) ??
+      toBareHandle(handle, state.env);
     token.level = level;
-    const attrs = options?.linkAttributes?.(match[0], state.env) ?? {};
-    attrs.href = href ?? `acct:${match[0]}`;
+    const attrs = options?.linkAttributes?.(handle, state.env) ?? {};
+    attrs.href = href ?? `acct:${handle}`;
     token.attrs = Object.entries(attrs);
-    token.info = match[0];
+    token.info = handle;
     tokens.push(token);
     pos = match.index + match[0].length;
   }

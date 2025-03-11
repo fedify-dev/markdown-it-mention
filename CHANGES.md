@@ -8,6 +8,9 @@ Version 0.3.0
 
 To be released.
 
+ -  Added `PluginOptions.localDomain` option to determine the domain of bare
+    handles.
+
 
 Version 0.2.0
 -------------
