@@ -6,7 +6,7 @@ Changelog
 Version 0.3.0
 -------------
 
-To be released.
+Released on March 11, 2025.
 
  -  Added `PluginOptions.localDomain` option to determine the domain of bare
     handles.
